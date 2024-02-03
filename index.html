@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,15 +60,9 @@
         const port = parseInt(inputUrl.split('@')[1].split(':')[1].split('?')[0]);
         
         const output = {
-  "log": {
-    "access": "",
-    "error": "",
-    "loglevel": "none",
-    "dnsLog": false
-  },
-  "dns": {
-    "tag": "dns",
-    "hosts": {
+            dns: {
+    tag: "dns",
+    hosts: {
       "cloudflare-dns.com": [
         "172.67.73.38",
         "104.19.155.92",
@@ -82,52 +77,55 @@
         "google.com"
       ]
     },
-    "servers": [
+    servers: [
       "https://cloudflare-dns.com/dns-query"
     ]
   },
-  "inbounds": [
+  inbounds: [
     {
-      "domainOverride": [
+      domainOverride: [
         "http",
         "tls"
       ],
-      "protocol": "socks",
-      "tag": "socks-in",
-      "listen": "127.0.0.1",
-      "port": 10808,
-      "settings": {
-        "auth": "noauth",
-        "udp": true,
-        "userLevel": 8
+      protocol: "socks",
+      tag: "socks-in",
+      listen: "127.0.0.1",
+      port: 10808,
+      settings: {
+        auth: "noauth",
+        udp: true,
+        userLevel: 8
       },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
+      sniffing: {
+        enabled: true,
+        destOverride: [
           "http",
           "tls"
         ]
       }
     },
     {
-      "protocol": "http",
-      "tag": "http-in",
-      "listen": "127.0.0.1",
-      "port": 10809,
-      "settings": {
-        "userLevel": 8
+      protocol: "http",
+      tag: "http-in",
+      listen: "127.0.0.1",
+      port: 10809,
+      settings: {
+        userLevel: 8
       },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
+      sniffing: {
+        enabled: true,
+        destOverride: [
           "http",
           "tls"
         ]
       }
     }
   ],
-  "outbounds": [
-    {
+            log: {
+                loglevel: "warning"
+            },
+            outbounds: [
+            {
       "protocol": "freedom",
       "tag": "fragment-out",
       "domainStrategy": "UseIP",
@@ -166,7 +164,7 @@
         "vnext": [
           {
             "address": "google.com",
-            "port": 443,
+            "port": 2083,
             "users": [
               {
                 "encryption": "none",
@@ -203,133 +201,139 @@
         }
       }
     },
-    {
-      "tag": "proxy",
-      "protocol": "vless",
-      "settings": {
-        "vnext": [
-          {
-            address: address,
-            port: port,
-            "users": [
-              {
-                id: id,
-                "alterId": 0,
-                "email": "t@t.tt",
-                "security": "auto",
-                "encryption": "none",
-                "flow": ""
-              }
-            ]
-          }
-        ]
-      },
-      "streamSettings": {
-        network: searchParams.get("type"),
-        security: searchParams.get("security"),
-        "tlsSettings": {
-          "allowInsecure": true,
-          serverName: searchParams.get("sni"),
-         alpn: [searchParams.get("alpn")],
-          fingerprint: searchParams.get("fp"),
-          "show": false
-        },
-        "wsSettings": {
-          path: searchParams.get("path")
-          "headers": {
-            Host: searchParams.get("host")
-          }
-        },
-        "sockopt": {
-          "dialerProxy": "fragment",
-          "tcpKeepAliveIdle": 100,
-          "mark": 255
-        }
-      },
-      "mux": {
-        "enabled": false,
-        "concurrency": -1
-      }
-    },
-    {
-      "tag": "fragment",
-      "protocol": "freedom",
-      "settings": {
-        "fragment": {
-          "packets": "tlshello",
-          "length": "10-20",
-          "interval": "10-20"
-        }
-      },
-      "streamSettings": {
-        "sockopt": {
-          "TcpNoDelay": true,
-          "tcpKeepAliveIdle": 100,
-          "mark": 255
-        }
-      }
-    },
-    {
-      "protocol": "freedom",
-      "settings": {},
-      "tag": "direct"
-    },
-    {
-      "protocol": "blackhole",
-      "settings": {},
-      "tag": "blocked"
-    }
-  ],
-  "policy": {
-        "levels": {
-            "8": {
-                "connIdle": 300,
-                "downlinkOnly": 1,
-                "handshake": 4,
-                "uplinkOnly": 1
+                {
+                
+                 protocol: "vless",
+                    settings: {
+                        vnext: [
+                            {
+                                address: address,
+                                port: port,
+                                users: [
+                                    {
+                                        encryption: "none",
+                                        flow: "",
+                                        id: id,
+                                        level: 8,
+                                        security: "auto"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    streamSettings: {
+                        network: searchParams.get("type"),
+                        security: searchParams.get("security"),
+                        tlsSettings: {
+                            allowInsecure: false,
+                            alpn: [searchParams.get("alpn")],
+                            fingerprint: searchParams.get("fp"),
+                            publicKey: "",
+                            serverName: searchParams.get("sni"),
+                            shortId: "",
+                            show: false,
+                            spiderX: ""
+                        },
+                        wsSettings: {
+                            headers: {
+                                Host: searchParams.get("host")
+                            },
+                            path: searchParams.get("path")
+                        }
+                    },
+                    proxySettings: {
+                        tag: "fragment",
+                        transportLayer: true
+                    },
+                    tag: "proxy"
+                },
+                {
+                    protocol: "freedom",
+                    settings: {},
+                    tag: "direct"
+                },
+                {
+                    protocol: "freedom",
+                    tag: "fragment",
+                    domainStrategy: "UseIP",
+                    sniffing: {
+                        enabled: true,
+                        destOverride: ["http", "tls"]
+                    },
+                    settings: {
+                        fragment: {
+                            packets: "tlshello",
+                            length: "10-20",
+                            interval: "10-20"
+                        }
+                    },
+                    streamSettings: {
+                        sockopt: {
+                            tcpNoDelay: true,
+                            domainStrategy: "UseIP"
+                        }
+                    }
+                },
+                {
+                    protocol: "blackhole",
+                    settings: {
+                        response: {
+                            type: "http"
+                        }
+                    },
+                    tag: "block"
+                }
+            ],
+            policy: {
+        levels: {
+            8: {
+                connIdle: 300,
+                downlinkOnly: 1,
+                handshake: 4,
+                uplinkOnly: 1
             }
         },
-        "system": {
-            "statsOutboundUplink": true,
-            "statsOutboundDownlink": true
+        system: {
+            statsOutboundUplink: true,
+            statsOutboundDownlink: true
         }
     },
-    "routing": {
-        "domainStrategy": "IPIfNonMatch",
-        "rules": [
+    routing: {
+        domainStrategy: "IPIfNonMatch",
+        rules: [
             {
-                "type": "field",
-                "domain": [
+                type: "field",
+                domain: [
                     "youtube.com",
                     "geosite:google",
                     "google.com",
                     "geosite:category-porn"
                 ],
-                "outboundTag": "fragment-out"
+                outboundTag: "fragment-out"
             },
             {
-                "type": "field",
-                "port": "2083",
-                "inboundTag": [
+                type: "field",
+                port: "2083",
+                inboundTag: [
                     "socks-in",
                     "http-in"
                 ],
-                "outboundTag": "dns-out"
+                outboundTag: "dns-out"
             },
             {
-                "inboundTag": [
+                inboundTag: [
                     "socks-in",
                     "http-in"
                 ],
-                "type": "field",
-                "port": "0-65535",
-                "outboundTag": "proxy",
-                "enabled": true
+                type: "field",
+                port: "0-65535",
+                outboundTag: "proxy",
+                enabled: true
             }
         ],
-        "strategy": "rules"
+        strategy: "rules"
     },
-    "stats": {}
+    stats: {}
 }
 
         document.getElementById('output').textContent = JSON.stringify(output, null, 4);
@@ -350,6 +354,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
-
-
-</body></html>
+</body>
+</html>
