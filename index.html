@@ -63,12 +63,12 @@
         const address = inputUrl.split('@')[1].split(':')[0];
         const port = parseInt(inputUrl.split('@')[1].split(':')[1].split('?')[0]);
         
-        const output = {         
-  log: {
-    "access": "",
-    "error": "",
-    "loglevel": "none",
-    "dnsLog": false
+        const output = {
+   log: {
+    access: "",
+    error: "",
+    loglevel: "none",
+    dnsLog: false
   },
   dns: { 
     tag: "dns",
@@ -108,7 +108,7 @@
       settings: {
         auth: "noauth",
         udp: true,
-        allowTransparent: true
+        allowTransparent: false
       }
     },
     {
@@ -127,7 +127,7 @@
       settings: {
         auth: "noauth",
         udp: true,
-        allowTransparent: true
+        allowTransparent: false
       }
     }
   ],
@@ -138,7 +138,7 @@
       settings: {
         vnext: [
           {
-            address: address,
+            address: "104.19.236.24",
             port: port,
             users: [
               {
@@ -173,10 +173,7 @@
           dialerProxy: "fragment",
           tcpKeepAliveIdle: 100,
           mark: 255,
-          tcpNoDelay: true,
-          tcpMptcp: true,
-          tcpMaxSeg: 1440,
-          tcpFastOpen: true
+          tcpNoDelay: true
         }
       },
       mux: {
@@ -185,6 +182,10 @@
         xudpConcurrency: 16,
         xudpProxyUDP443: "reject"
       }
+    },
+{
+      tag: "dns-out",
+      protocol: "dns"
     },
     {
       tag: "fragment",
@@ -200,14 +201,11 @@
       streamSettings: {
         sockopt: {
           tcpNoDelay: true,
-          tcpKeepAliveIdle: 100,
-          tcpMptcp: true,
-          tcpMaxSeg: 1440,
-          tcpFastOpen: true
+          tcpKeepAliveIdle: 100
         }
       }
     },
-    {
+ {
       tag: "direct",
       protocol: "freedom",
       settings: {
@@ -227,14 +225,10 @@
           type: "http"
         }
       }
-    },
-    {
-      tag: "dns-out",
-      protocol: "dns"
     }
   ],
   routing: {
-    domainStrategy: "IPIfNonMatch",
+    domainStrategy: "AsIs",
     rules: [
       {
         type: "field",
@@ -245,6 +239,15 @@
         enabled: true
       },
       {
+        id: "5465425548310166497",
+        type: "field",
+        outboundTag: "direct",
+        domain: [
+          "domain:ir"
+        ],
+        enabled: true
+      },
+ {
         type: "field",
         domain: [
           "youtube.com",
@@ -254,13 +257,14 @@
         outboundTag: "direct"
       },
       {
+        id: "5425034033205580637",
         type: "field",
-        port: "2087",
-        inboundTag: [
-          "socks",
-          "http"
+        outboundTag: "direct",
+        ip: [
+          "geoip:private",
+          "geoip:ir"
         ],
-        outboundTag: "dns-out"
+        enabled: true
       },
       {
         id: "5627785659655799759",
