@@ -230,7 +230,11 @@
     },
     {
       tag: "dns-out",
-      protocol: "dns"
+      protocol: "dns",
+      settings: {
+      network: "tcp",
+       address: "1.1.1.1",
+       port": 53
     }
   ],
   routing: {
@@ -255,7 +259,7 @@
       },
       {
         type: "field",
-        port: "8443",
+        port: "53",
         inboundTag: [
           "socks",
           "http"
