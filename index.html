@@ -99,7 +99,7 @@ headers: {
       statsOutboundUplink: true,
       statsOutboundDownlink: true
     }
-  },routing: { domainStrategy: "IPIfNonMatch", rules: [{ type: "field", inboundTag: [ "api" ], outboundTag: "api", enabled: true }, { type: "field", outboundTag: "direct", domain: [ "domain:ir" ], enabled: true }, { type: "field", domain: [ "youtube.com", "twitter.com"], outboundTag: "direct" }, { type: "field", outboundTag: "direct", ip: [ "geoip:private", "geoip:ir" ], enabled: true }, { type: "field", port: "0-65535", outboundTag: "proxy", enabled: true } ] } }
+  },routing: { domainStrategy: "IPIfNonMatch", rules: [{ type: "field", inboundTag: [ "api" ], outboundTag: "api", enabled: true }, { type: "field", domain: [ "youtube.com", "twitter.com"], outboundTag: "direct" }, { type: "field", port: "0-65535", outboundTag: "proxy", enabled: true } ] } }
         document.getElementById('output').textContent = JSON.stringify(output);
         document.getElementById('copyButton').style.display = 'block';
         document.getElementById('output').style.display = 'block';
