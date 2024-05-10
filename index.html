@@ -115,15 +115,25 @@ routing: {
         ],
         outboundTag: "api"
       },
-			
+{
+        type: "field",
+        outboundTag: "direct",
+        domain: [
+          "domain:ir",
+ "google.com",
+          "geosite:cn"
+        ],
+        enabled: true
+      },
       {
         type: "field",
-        domain: [
-          "google.com"
+        outboundTag: "direct",
+        ip: [
+          "geoip:private",
+          "geoip:ir"
         ],
-        outboundTag: "direct"
-      },
-            {
+        "enabled": true
+      },            {
         type: "field",
         port: "0-65535",
         balancerTag: "balancer"
