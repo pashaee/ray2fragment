@@ -65,14 +65,53 @@
         const port = parseInt(inputUrl.split('@')[1].split(':')[1].split('?')[0]);
         
         const output = {
-   remarks: remarks, log: { access: "", error: "", loglevel: "none", dnsLog: false }, dns: {
-    tag: "dns",
-        servers: [
-      "https://cloudflare-dns.com/dns-query",
-"8.8.8.8",
-"1.1.1.1"
-    ]
-  }, inbounds: [ { tag: "socks", port: 10808, listen: "127.0.0.1", protocol: "socks", sniffing: { enabled: true, destOverride: [ "http", "tls", "fakedns" ]}, settings: { auth: "noauth", udp: true, "userLevel": 8} }, { tag: "http", port: 10809, listen: "127.0.0.1", protocol: "http", sniffing: { enabled: true, destOverride: [ "http", "tls", "fakedns" ]}, settings: { auth: "noauth", udp: true, "userLevel": 8} } ], outbounds: [ { tag: "proxy1", protocol: "vless", settings: { vnext: [ { address: "104.18.7.178", port: port, users: [ { id: id, alterId: 0, email: "t@t.tt", security: "auto", encryption: "none", flow: "" } ] } ] }, streamSettings: { network: searchParams.get("type"), security: searchParams.get("security"), tlsSettings: { allowInsecure: true, serverName: searchParams.get("sni"), alpn: [searchParams.get("alpn")], fingerprint: "randomized", show: false}, wsSettings: { path: searchParams.get("path"), headers: {
+   remarks: remarks, 
+log: {
+    access: "",
+    error: "",
+    loglevel: "warning"
+  },
+ inbounds: [
+    {
+      tag: "socks",
+      port: 10808,
+      listen: "127.0.0.1",
+      protocol: "socks",
+      sniffing: {
+        enabled: true,
+        destOverride: [
+          "http",
+          "tls"
+        ],
+        routeOnly: false
+      },
+      settings: {
+        auth: "noauth",
+        udp: true,
+        allowTransparent: false
+      }
+    },
+    {
+      tag: "http",
+      port: 10809,
+      listen: "127.0.0.1",
+      protocol: "http",
+      sniffing: {
+        enabled: true,
+        destOverride: [
+          "http",
+          "tls"
+        ],
+        routeOnly: false
+      },
+      settings: {
+        auth: "noauth",
+        udp: true,
+        allowTransparent: false
+      }
+    }
+  ],
+ outbounds: [ { tag: "proxy1", protocol: "vless", settings: { vnext: [ { address: "104.18.7.178", port: port, users: [ { id: id, alterId: 0, email: "t@t.tt", security: "auto", encryption: "none", flow: "" } ] } ] }, streamSettings: { network: searchParams.get("type"), security: searchParams.get("security"), tlsSettings: { allowInsecure: true, serverName: searchParams.get("sni"), alpn: [searchParams.get("alpn")], fingerprint: "randomized", show: false}, wsSettings: { path: searchParams.get("path"), headers: {
             Host: searchParams.get("host"),
             "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
            }
@@ -98,20 +137,7 @@
       },
       tag: "direct"
     },
- { tag: "block", protocol: "blackhole", settings: { response: { type: "http" } } } ],  "policy": {
-    levels: {
-      8: {
-        connIdle: 300,
-        downlinkOnly: 1,
-        handshake: 4,
-        uplinkOnly: 1
-      }
-    },
-    system: {
-      statsOutboundUplink: true,
-      statsOutboundDownlink: true
-    }
-  },
+ { tag: "block", protocol: "blackhole", settings: { response: { type: "http" } } } ],  
 routing: {
     domainStrategy: "AsIs",
     rules: [
@@ -121,13 +147,6 @@ routing: {
           "api"
         ],
         outboundTag: "api"
-      },
-{
-        type: "field",
-        domain: [
-          "youtube.com"
-        ],
-        "outboundTag": "fragment"
       },
 {
         type: "field",
