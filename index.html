@@ -71,6 +71,12 @@ log: {
     error: "",
     loglevel: "warning"
   },
+dns: {
+    tag: "dns",
+     servers: [
+      "https://cloudflare-dns.com/dns-query"
+    ]
+  },
  inbounds: [
     {
       tag: "socks",
@@ -111,25 +117,25 @@ log: {
       }
     }
   ],
- outbounds: [ { tag: "proxy1", protocol: "vless", settings: { vnext: [ { address: "104.18.7.178", port: port, users: [ { id: id, alterId: 0, email: "t@t.tt", security: "auto", encryption: "none", flow: "" } ] } ] }, streamSettings: { network: searchParams.get("type"), security: searchParams.get("security"), tlsSettings: { allowInsecure: true, serverName: searchParams.get("sni"), alpn: [searchParams.get("alpn")], fingerprint: "randomized", show: false}, wsSettings: { path: searchParams.get("path"), headers: {
+ outbounds:
+ [
+ {
+ tag: "proxy",
+ protocol: "vless",
+ settings: 
+{
+ vnext:
+ [
+ {
+ address: "ip2.v2masters.ru", 
+port: 443, 
+users: [ { id: id, alterId: 0, email: "t@t.tt", security: "auto", encryption: "none", flow: "" } ] } ] }, streamSettings: { network: searchParams.get("type"), security: searchParams.get("security"), tlsSettings: { allowInsecure: true, serverName: searchParams.get("sni"), alpn: [searchParams.get("alpn")], fingerprint: "randomized", show: false}, wsSettings: { path: searchParams.get("path"), headers: {
             Host: searchParams.get("host"),
             "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
            }
         },
  sockopt: { dialerProxy: "fragment", tcpKeepAliveIdle: 100, mark: 255, tcpNoDelay: true } }, mux: { enabled: true, concurrency: 8, xudpConcurrency: 16, xudpProxyUDP443: "reject" } },
-{ tag: "proxy2", protocol: "vless", settings: { vnext: [ { address: "104.18.7.178", port: port, users: [ { id: id, alterId: 0, email: "t@t.tt", security: "auto", encryption: "none", flow: "" } ] } ] }, streamSettings: { network: searchParams.get("type"), security: searchParams.get("security"), tlsSettings: { allowInsecure: true, serverName: searchParams.get("sni"), alpn: [searchParams.get("alpn")], fingerprint: "randomized", show: false}, wsSettings: { path: searchParams.get("path"), headers: {
-            Host: searchParams.get("host"),
-            "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
-           }
-        },
- sockopt: { dialerProxy: "fragment", tcpKeepAliveIdle: 100, mark: 255, tcpNoDelay: true } }, mux: { enabled: true, concurrency: 8, xudpConcurrency: 16, xudpProxyUDP443: "reject" } },
-{ tag: "proxy3", protocol: "vless", settings: { vnext: [ { address: "104.18.7.178", port: port, users: [ { id: id, alterId: 0, email: "t@t.tt", security: "auto", encryption: "none", flow: "" } ] } ] }, streamSettings: { network: searchParams.get("type"), security: searchParams.get("security"), tlsSettings: { allowInsecure: true, serverName: searchParams.get("sni"), alpn: [searchParams.get("alpn")], fingerprint: "randomized", show: false}, wsSettings: { path: searchParams.get("path"), headers: {
-            Host: searchParams.get("host"),
-            "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
-           }
-        },
- sockopt: { dialerProxy: "fragment", tcpKeepAliveIdle: 100, mark: 255, tcpNoDelay: true } }, mux: { enabled: true, concurrency: 8, xudpConcurrency: 16, xudpProxyUDP443: "reject" } },
- { tag: "fragment", protocol: "freedom", settings: { domainStrategy: "AsIs", fragment: { packets: "tlshello", length: "10-20", interval: "10-20" } }, streamSettings: { sockopt: { tcpNoDelay: true, tcpKeepAliveIdle: 100 } } },
+ { tag: "fragment", protocol: "freedom", settings: { domainStrategy: "AsIs", fragment: { packets: "tlshello", length: "5-10", interval: "10-20" }} }, 
  {
       protocol: "freedom",
       settings: {
@@ -169,20 +175,10 @@ routing: {
     {
         type: "field",
         port: "0-65535",
-        balancerTag: "balancer"
-      }
-    ],
-    balancers: [
-      {
-        tag: "balancer",
-        selector: [
-          "proxy1",
-          "proxy2",
-          "proxy3"
-        ],
-        strategy: {
-          type: "roundRobin"
-        }
+        outboundTag: "proxy",
+        enabled: true
+ 
+     
       }
     ]
   }
