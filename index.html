@@ -73,11 +73,19 @@ log: {
   },
 dns: {
     tag: "dns",
+hosts: 
+{
+      "www.google.com": [
+        "216.239.38.120"      
+      ],
         servers: [
       "https://cloudflare-dns.com/dns-query",
       "https://94.140.14.140/dns-query",
       "https://94.140.14.141/dns-query"
     ]
+},
+queryStrategy: "UseIP",
+    disableCache: true
   },
  inbounds: [
     {
@@ -196,7 +204,7 @@ routing: {
         type: "field",
         outboundTag: "direct",
         domain: [
-        "google.com",
+        "www.google.com",
         "domain:ir",
           "geosite:cn"
         ],
