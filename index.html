@@ -71,13 +71,18 @@ log: {
     error: "",
     loglevel: "warning"
   },
-dns: {
-    tag: "dns",
-        servers: [
-      "https://cloudflare-dns.com/dns-query",
-      "https://94.140.14.140/dns-query",
-      "https://94.140.14.141/dns-query"
-    ]
+dns:{
+    tag:"dns",
+    hosts:{
+        "youtube.com":["216.239.38.120"],
+        "youtu.be":["216.239.38.120"],
+        "www.youtube.com":["216.239.38.120"],
+        "i.ytimg.com":["216.239.38.120"],
+        "telegram.org":["149.154.167.92","149.154.167.255"],
+        servers:
+            ["https://cloudflare-dns.com/dns-query",
+             "https://94.140.14.140/dns-query","https://94.140.14.141/dns-query"]
+    }
 },
  inbounds: [
     {
@@ -133,7 +138,7 @@ users: [ { id: id, alterId: 0, email: "t@t.tt", security: "auto", encryption: "n
            }
         },
  sockopt: { dialerProxy: "fragment", tcpKeepAliveIdle: 100, mark: 255, tcpNoDelay: true } }, mux: { enabled: true, concurrency: 8, xudpConcurrency: 16, xudpProxyUDP443: "reject" } },
- { tag: "fragment", protocol: "freedom", settings: { domainStrategy: "AsIs", fragment: { packets: "tlshello", length: "5-9", interval: "1-3" }} }, 
+ { tag: "fragment", protocol: "freedom", settings: { domainStrategy: "UseIP", fragment: { packets: "tlshello", length: "5-9", interval: "1-3" }} }, 
 {
       protocol: "dns",
       tag: "dns-out"
@@ -141,7 +146,7 @@ users: [ { id: id, alterId: 0, email: "t@t.tt", security: "auto", encryption: "n
  {
       protocol: "freedom",
       settings: {
-        domainStrategy: "AsIs"
+        domainStrategy: "UseIP"
       },
       tag: "direct"
     },
