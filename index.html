@@ -71,13 +71,18 @@ log: {
     error: "",
     loglevel: "warning"
   },
-dns: {
-    tag: "dns",
-        servers: [
-      "https://cloudflare-dns.com/dns-query",
-      "https://94.140.14.140/dns-query",
-      "https://94.140.14.141/dns-query"
-    ]
+dns:{
+    tag:"dns",
+    hosts:{
+        "youtube.com":["216.239.38.120"],
+        "youtu.be":["216.239.38.120"],
+        "www.youtube.com":["216.239.38.120"],
+        "i.ytimg.com":["216.239.38.120"],
+        "telegram.org":["149.154.167.92","149.154.167.255"],
+        servers:
+            ["https://cloudflare-dns.com/dns-query",
+             "https://94.140.14.140/dns-query","https://94.140.14.141/dns-query"]
+    }
 },
  inbounds: [
     {
