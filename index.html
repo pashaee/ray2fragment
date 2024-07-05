@@ -59,66 +59,66 @@
         const port = parseInt(inputUrl.split('@')[1].split(':')[1].split('?')[0]);
 
         const tlsConfig = {
-            remarks: remarks, 
+            remarks: remarks,
                 log: {
                     access: "",
                     error: "",
                     loglevel: "warning"
                 },
-            dns: {
-    servers: [
-      "8.8.8.8",
-      "https://cloudflare-dns.com/dns-query"
-    ],
-    queryStrategy: "UseIP",
-    tag: "dns_inbound",
-                disableCache: true,
-    disableFallback: true
-  },
-  fakedns: [
-    {
-      ipPool: "198.18.0.0/15",
-      poolSize: 10000
-    }
-  ],
+                dns: {
+                    servers: [
+                        "8.8.8.8",
+                        "https://cloudflare-dns.com/dns-query"
+                    ],
+                    queryStrategy: "UseIP",
+                    tag: "dns_inbound",
+                    disableCache: true,
+                    disableFallback: true
+                },
+                fakedns: [
+                    {
+                        ipPool: "198.18.0.0/15",
+                        poolSize: 10000
+                    }
+                ],
                 inbounds: [
-    {
-      domainOverride: [
-        "http",
-        "tls"
-      ],
-      protocol: "socks",
-      tag: "socks-in",
-      listen: "127.0.0.1",
-      port: 10808,
-      settings: {
-        auth: "noauth",
-        udp: true,
-        "userLevel": 8
-      },
-      sniffing: {
-        enabled: true,
-        destOverride: [
-           "http",
-          "tls",
-          "fakedns"
-        ]
-      }
-    },
-    {
-      protocol: "http",
-      tag: "http-in",
-      listen: "127.0.0.1",
-      port: 10809,
-      sniffing: {
-        enabled: true,
-        destOverride: [
-          "http",
-          "tls"
-        ]
-      }
-    }
-  ],
+                    {
+                        domainOverride: [
+                            "http",
+                            "tls"
+                        ],
+                        protocol: "socks",
+                        tag: "socks-in",
+                        listen: "127.0.0.1",
+                        port: 10808,
+                        settings: {
+                            auth: "noauth",
+                            udp: true,
+                            "userLevel": 8
+                        },
+                        sniffing: {
+                            enabled: true,
+                            destOverride: [
+                                "http",
+                                "tls",
+                                "fakedns"
+                            ]
+                        }
+                    },
+                    {
+                        protocol: "http",
+                        tag: "http-in",
+                        listen: "127.0.0.1",
+                        port: 10809,
+                        sniffing: {
+                            enabled: true,
+                            destOverride: [
+                                "http",
+                                "tls"
+                            ]
+                        }
+                    }
+                ],
                 outbounds: [
                     {
                         tag: "proxy",
@@ -126,8 +126,8 @@
                         settings: {
                             vnext: [
                                 {
-                                    address: "ftp.ir.debian.org", 
-                                    port: port, 
+                                    address: address,
+                                    port: port,
                                     users: [
                                         {
                                             id: id,
@@ -135,24 +135,24 @@
                                             email: "t@t.tt",
                                             security: "auto",
                                             encryption: "none",
-                                            flow: "" 
-                                        } 
-                                    ] 
-                                } 
-                            ] 
+                                            flow: ""
+                                        }
+                                    ]
+                                }
+                            ]
                         },
-                        streamSettings: { 
+                        streamSettings: {
                             network: searchParams.get("type"),
                             security: searchParams.get("security"),
-                            tlsSettings: { 
+                            tlsSettings: {
                                 allowInsecure: true,
                                 serverName: searchParams.get("sni"),
-                                alpn: [searchParams.get("alpn")],
+                                alpn: searchParams.get("alpn") ? [searchParams.get("alpn")] : undefined,
                                 fingerprint: "firefox",
                                 show: false
                             },
-                            wsSettings: { 
-                                path: searchParams.get("path"), 
+                            wsSettings: {
+                                path: searchParams.get("path"),
                                 headers: {
                                     Host: searchParams.get("host"),
                                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
@@ -163,22 +163,26 @@
                                 tcpKeepAliveIdle: 100,
                                 mark: 255,
                                 tcpNoDelay: true
-                            } 
-                        }, 
-                        mux: {
-                            enabled: true, concurrency: 2, xudpConcurrency: 2,
-                            xudpProxyUDP443: "reject" 
-                        } 
-                    },
-                    { 
-                        tag: "fragment", 
-                        protocol: "freedom", 
-                        settings: { 
-                            domainStrategy: "AsIs",
-                            fragment: { 
-                                packets: "tlshello", length: "500-700", interval: "0" 
                             }
-                        } 
+                        },
+                        mux: {
+                            enabled: true,
+                            concurrency: 2,
+                            xudpConcurrency: 2,
+                            xudpProxyUDP443: "reject"
+                        }
+                    },
+                    {
+                        tag: "fragment",
+                        protocol: "freedom",
+                        settings: {
+                            domainStrategy: "AsIs",
+                            fragment: {
+                                packets: "tlshello",
+                                length: "500-700",
+                                interval: "0"
+                            }
+                        }
                     },
                     {
                         protocol: "freedom",
@@ -187,18 +191,21 @@
                         },
                         tag: "direct"
                     },
-{
-      protocol: "dns",
-      tag: "dns-out",
-      settings: {
-        network: "tcp",
-        address: "1.1.1.1",
-        port: 53
-    },
-                    { 
-                        tag: "block", protocol: "blackhole", settings: { response: { type: "http" } } 
-                    } 
-                ],  
+                    {
+                        protocol: "dns",
+                        tag: "dns-out",
+                        settings: {
+                            network: "tcp",
+                            address: "1.1.1.1",
+                            port: 53
+                        }
+                    },
+                    {
+                        tag: "block",
+                        protocol: "blackhole",
+                        settings: { response: { type: "http" } }
+                    }
+                ],
                 routing: {
                     domainStrategy: "AsIs",
                     rules: [
@@ -208,19 +215,17 @@
                             outboundTag: "api"
                         },
                         {
-        type: "field",
-        port: "53",
-        inboundTag: [
-          "dns_inbound"
-        ],
-        outboundTag: "dns-out"
-      },
+                            type: "field",
+                            port: "53",
+                            inboundTag: ["dns_inbound"],
+                            outboundTag: "dns-out"
+                        },
                         {
-        type: "field",
-        port": "53",
-        network: "TCP,UDP",
-        outboundTag: "proxy"
-      },
+                            type: "field",
+                            port: "53",
+                            network: "TCP,UDP",
+                            outboundTag: "proxy"
+                        },
                         {
                             type: "field",
                             outboundTag: "direct",
