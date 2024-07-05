@@ -65,35 +65,18 @@
                     error: "",
                     loglevel: "warning"
                 },
-                 dns: {
-    hosts: {
-      "domain:googleapis.cn": "googleapis.com"
-    },
+            dns: {
     servers: [
-      {
-        address: "fakedns",
-        domains: [
-          "geosite:cn"
-        ]
-      },
-      "https://94.140.14.14/dns-query",
-      {
-        address: "https://94.140.14.14/dns-query",
-        domains: [
-          "geosite:cn",
-          "geosite:geolocation-cn"
-        ],
-        expectIPs: [
-          "geoip:cn"
-        ],
-        port: 53
-      }
-    ]
+      "https://cloudflare-dns.com/dns-query"
+    ],
+    queryStrategy: "UseIPv4",
+    disableCache: true,
+    disableFallback: true
   },
   fakedns: [
     {
-      ipPool: "198.18.0.0/15",
-      poolSize: 10000
+      "ipPool": "198.18.0.0/15",
+      "poolSize": 10000
     }
   ],
                 inbounds: [
@@ -229,11 +212,16 @@
                             inboundTag: ["api"],
                             outboundTag: "api"
                         },
- {
-        inboundTag: [
-          "dns-in"
-        ],
+                         {
+        type: "field",
+        port: 53,
         outboundTag: "dns-out"
+      },
+      {
+        type: "field",
+        network: "udp",
+        port: 53,
+        outboundTag: "proxy"
       },
                         {
                             type: "field",
