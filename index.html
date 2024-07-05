@@ -66,19 +66,19 @@
                     loglevel: "warning"
                 },
             dns: {
-    "servers": [
+    servers: [
       "8.8.8.8",
       "https://cloudflare-dns.com/dns-query"
     ],
-    "queryStrategy": "UseIP",
-    "tag": "dns_inbound",
+    queryStrategy: "UseIP",
+    tag: "dns_inbound",
                 disableCache: true,
     disableFallback: true
   },
   fakedns: [
     {
-      "ipPool": "198.18.0.0/15",
-      "poolSize": 10000
+      ipPool: "198.18.0.0/15",
+      poolSize: 10000
     }
   ],
                 inbounds: [
