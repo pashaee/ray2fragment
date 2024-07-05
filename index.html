@@ -66,11 +66,13 @@
                     loglevel: "warning"
                 },
             dns: {
-    servers: [
+    "servers": [
+      "8.8.8.8",
       "https://cloudflare-dns.com/dns-query"
     ],
-    queryStrategy: "UseIPv4",
-    disableCache: true,
+    "queryStrategy": "UseIP",
+    "tag": "dns_inbound",
+                disableCache: true,
     disableFallback: true
   },
   fakedns: [
@@ -102,17 +104,6 @@
           "fakedns"
         ]
       }
-    },
-{
-      listen: "127.0.0.1",
-      port: 10853,
-      protocol: "dokodemo-door",
-      settings: {
-        address: "1.1.1.1",
-        network: "tcp,udp",
-        port: 53
-      },
-      "tag": "dns-in"
     },
     {
       protocol: "http",
@@ -197,8 +188,12 @@
                         tag: "direct"
                     },
 {
-      "protocol": "dns",
-      "tag": "dns-out"
+      protocol: "dns",
+      tag: "dns-out",
+      settings: {
+        network: "tcp",
+        address: "1.1.1.1",
+        port: 53
     },
                     { 
                         tag: "block", protocol: "blackhole", settings: { response: { type: "http" } } 
@@ -212,15 +207,18 @@
                             inboundTag: ["api"],
                             outboundTag: "api"
                         },
-                         {
+                        {
         type: "field",
-        port: 53,
+        port: "53",
+        inboundTag: [
+          "dns_inbound"
+        ],
         outboundTag: "dns-out"
       },
-      {
+                        {
         type: "field",
-        network: "udp",
-        port: 53,
+        port": "53",
+        network: "TCP,UDP",
         outboundTag: "proxy"
       },
                         {
