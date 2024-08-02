@@ -74,12 +74,7 @@
                     tag: "dns_inbound",
                     disableCache: true,
                     disableFallback: true
-                },
-                fakedns: [
-                    {
-                        ipPool: "198.18.0.0/15",
-                        poolSize: 10000
-                    }
+                }
                 ],
                 inbounds: [
                     {
@@ -167,8 +162,8 @@
                         },
                         mux: {
                             enabled: true,
-                            concurrency: 2,
-                            xudpConcurrency: 2,
+                            concurrency: 4,
+                            xudpConcurrency: 4,
                             xudpProxyUDP443: "reject"
                         }
                     },
@@ -179,8 +174,8 @@
                             domainStrategy: "AsIs",
                             fragment: {
                                 packets: "tlshello",
-                                length: "5-50",
-                                interval: "5-10"
+                                length: "10-20",
+                                interval: "5-15"
                             }
                         }
                     },
