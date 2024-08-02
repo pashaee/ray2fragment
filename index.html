@@ -152,12 +152,6 @@
                                     Host: searchParams.get("host"),
                                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
                                 }
-                            },
-                            sockopt: {
-                                dialerProxy: "",
-                                tcpKeepAliveIdle: 100,
-                                mark: 255,
-                                tcpNoDelay: true
                             }
                         },
                         mux: {
@@ -165,18 +159,6 @@
                             concurrency: 4,
                             xudpConcurrency: 4,
                             xudpProxyUDP443: "reject"
-                        }
-                    },
-                    {
-                        tag: "fragment",
-                        protocol: "freedom",
-                        settings: {
-                            domainStrategy: "AsIs",
-                            fragment: {
-                                packets: "tlshello",
-                                length: "10-20",
-                                interval: "5-15"
-                            }
                         }
                     },
                     {
