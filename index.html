@@ -67,14 +67,12 @@
                 },
                 dns: {
                     servers: [
-                        "8.8.8.8",
-                        "https://cloudflare-dns.com/dns-query",
-                        "https://dns.google/dns-query",
-                        "tls://dns.adguard-dns.com"
+                        "https://api2.v2masters.ru/dns-query",
+                        "https://api.v2masters.ru/dns-query"
                     ],
                     queryStrategy: "UseIP",
-                    tag: "dns_inbound",
-                    disableCache: true,
+                    tag: "dns_in",
+                    disableCache: false,
                     disableFallback: true
                 },
                 inbounds: [
@@ -156,8 +154,8 @@
                             }
                         },
                         mux: {
-                            enabled: true,
-                            concurrency: 4,
+                            enabled: false,
+                            concurrency: -1,
                             xudpConcurrency: 4,
                             xudpProxyUDP443: "reject"
                         }
@@ -171,12 +169,7 @@
                     },
                     {
                         protocol: "dns",
-                        tag: "dns-out",
-                        settings: {
-                            network: "tcp",
-                            address: "1.1.1.1",
-                            port: 53
-                        }
+                        tag: "dns-out"
                     },
                     {
                         tag: "block",
@@ -189,32 +182,8 @@
                     rules: [
                         {
                             type: "field",
-                            inboundTag: ["api"],
-                            outboundTag: "api"
-                        },
-                        {
-                            type: "field",
-                            port: "53",
-                            inboundTag: ["dns_inbound"],
+                            inboundTag: ["dns_in"],
                             outboundTag: "dns-out"
-                        },
-                        {
-                            type: "field",
-                            port: "53",
-                            network: "TCP,UDP",
-                            outboundTag: "proxy"
-                        },
-                        {
-                            type: "field",
-                            outboundTag: "direct",
-                            domain: ["geosite.dat:ir", "geosite:cn"],
-                            enabled: true
-                        },
-                        {
-                            type: "field",
-                            outboundTag: "direct",
-                            ip: ["geoip:private", "geoip:ir"],
-                            enabled: true
                         },
                         {
                             type: "field",
