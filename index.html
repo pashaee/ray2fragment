@@ -73,7 +73,7 @@
                         "https://free.shecan.ir/dns-query"
                     ],
                     queryStrategy: "UseIP",
-                    tag: "dns_in",
+                    tag: "dns",
                     disableCache: false,
                     disableFallback: true
                 },
@@ -101,6 +101,17 @@
                             ]
                         }
                     },
+                     {
+                listen: "127.0.0.1",
+                port: 10853,
+                protocol: "dokodemo-door",
+                settings: {
+                    address: "1.1.1.1",
+                    network: "tcp,udp",
+                    port: 53
+                },
+                tag: "dns-in"
+            },
                     {
                         protocol: "http",
                         tag: "http-in",
@@ -187,6 +198,23 @@
                             inboundTag: ["dns_in"],
                             outboundTag: "dns-out"
                         },
+                        {
+                    inboundTag: [
+                        "socks-in",
+                        "http-in"
+                    ],
+                    port: "53",
+                    outboundTag: "dns-out",
+                    type: "field"
+                },
+                {
+                    ip": [
+                        "8.8.8.8"
+                    ],
+                    port: "53",
+                    outboundTag": "direct",
+                    type: "field"
+                },
                         {
                             type: "field",
                             port: "0-65535",
