@@ -263,15 +263,8 @@ policy:{
   },
 
                 routing: {
-      domainStrategy: "IPOnDemand",
+      domainStrategy: "IPIfNonMatch",
       rules: [
-        {
-          type: "field",
-          inboundTag: [
-            "api"
-          ],
-          outboundTag: "api"
-        },
         {
           type: "field",
           outboundTag: "proxy",
@@ -288,8 +281,8 @@ policy:{
             "9.9.9.9",
             "1.1.1.1",
             "45.11.45.11",
-            "149.154.167.0/24",
-            "129.134.30.12"
+            "149.154.167.0/24"
+            
           ]
         },
         {
