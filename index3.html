@@ -139,8 +139,7 @@ policy:{
                             wsSettings: {
                                 path: searchParams.get("path"),
                                 headers: {
-                                    Host: searchParams.get("host"),
-                                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
+                                    Host: searchParams.get("host")
                                 }
                             }
                             }
@@ -242,14 +241,14 @@ policy:{
                 dns: {
     tag: "dns",
     hosts: {
+      "a.ns.instagram.com":  "129.134.30.12",
+"b.ns.instagram.com": "129.134.31.12",
+"c.ns.instagram.com":  "185.89.218.12",
+"d.ns.instagram.com":  "185.89.219.12",
       "cloudflare-dns.com": [
         "172.67.73.38",
         "104.19.155.92",
-        "172.67.73.163",
-        "104.18.155.42",
-        "104.16.124.175",
         "104.16.248.249",
-        "104.16.249.249",
         "104.26.13.8"
       ],
       "domain:youtube.com": [
@@ -258,7 +257,8 @@ policy:{
     },
     servers: [
       "https://cloudflare-dns.com/dns-query",
-"https://45.11.45.11/dns-query"
+"https://45.11.45.11/dns-query",
+"https://dns.electrotm.org/dns-query"
     ]
   },
 
