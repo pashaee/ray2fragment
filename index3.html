@@ -141,7 +141,12 @@ policy:{
                                 headers: {
                                     Host: searchParams.get("host")
                                 }
-                            }
+                            },
+                            sockopt: {
+          tcpFastOpen: true,
+          tcpKeepAliveInterval: 100,
+          "tcpNoDelay": true
+        }
                             }
                         },
                      
@@ -165,6 +170,7 @@ policy:{
       },
       streamSettings: {
         sockopt: {
+          tcpFastOpen: true,
           tcpNoDelay: true,
           tcpKeepAliveIdle: 100,
           mark: 255,
