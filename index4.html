@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V2Ray to Fragment Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="./assets/css/vazir.css" rel="stylesheet" />
+    <link href="./assets/css/style.css" rel="stylesheet" />
+    <style>
+        #copyButton1, #output1 {
+            display: none;
+        }
+        html, body {
+            height: 100%;
+        }
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        .center-content2 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            direction: rtl;
+            text-align: center;
+            font: 14px vazir;
+            color: rgb(8, 8, 8);
+        }
+    </style>
+</head>
+<body>
+<div class="container center-content">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <input type="text" id="inputUrl" style="font: 14px vazir; direction: rtl;" class="form-control mb-3" placeholder="کانفیگ را وارد کنید">
+            <button onclick="generateConfigs()" class="btn btn-primary mb-3" style="font: 14px vazir;">ساخت کانفیگ</button>
+            <textarea id="output1" class="form-control mb-3" rows="10"></textarea>
+            <button id="copyButton1" onclick="copyToClipboard('output1')" class="btn btn-success mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"></path>
+                    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"></path>
+                </svg>
+                کپی کانفیگ
+            </button>
+        </div>
+    </div>
+</div>
+<script>
+    function generateConfigs() {
+        const inputUrl = document.getElementById('inputUrl').value;
+        const url = new URL(inputUrl);
+        const searchParams = new URLSearchParams(url.search);
+        const id = inputUrl.split('://')[1].split('@')[0];
+        const remarks = inputUrl.substring(inputUrl.indexOf('#') + 1);
+        const address = inputUrl.split('@')[1].split(':')[0];
+        const port = parseInt(inputUrl.split('@')[1].split(':')[1].split('?')[0]);
+
+        const tlsConfig = {
+            remarks: remarks,
+                log: {
+                   
+                    loglevel: "warning"
+                },
+policy:{
+      levels: {
+        "8": {
+          handshake: 4,
+          connIdle: 300,
+          uplinkOnly: 1,
+          downlinkOnly: 1
+        }
+      },
+      system: {
+        statsOutboundUplink: true,
+        statsOutboundDownlink: true
+      }
+  },
+
+
+                inbounds: [
+      {
+        tag: "socks",
+        port: 10808,
+        listen: "127.0.0.1",
+        protocol: "socks",
+        sniffing: {
+          enabled: true,
+          destOverride: [
+            "http",
+            "tls",
+            "quic",
+            "fakedns",
+            "fakedns+others"
+          ],
+          routeOnly: false
+        },
+        settings: {
+          auth: "noauth",
+          udp: true,
+          allowTransparent: false
+        }
+      }
+    ],
+                outbounds: [
+                    {
+                        tag: "proxy",
+                        protocol: "vless",
+                        settings: {
+                            vnext: [
+                                {
+                                    address: address,
+                                    port: port,
+                                    users: [
+                                        {
+                                            id: id,
+                                            alterId: 0,
+                                            email: "t@t.tt",
+                                            security: "auto",
+                                            encryption: "none",
+                                            flow: ""
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        streamSettings: {
+                            network: searchParams.get("type"),
+                            security: searchParams.get("security"),
+                            tlsSettings: {
+                                allowInsecure: true,
+                                serverName: searchParams.get("sni"),
+                                alpn: searchParams.get("alpn") ? [searchParams.get("alpn")] : undefined,
+                                fingerprint: "firefox",
+                                show: false
+                            },
+                            wsSettings: {
+                                path: searchParams.get("path"),
+                                headers: {
+                                    Host: searchParams.get("host")
+                                }
+                            },
+                            sockopt: {
+          tcpFastOpen: true,
+          tcpKeepAliveInterval: 100,
+          "tcpNoDelay": true
+        }
+                            }
+                        },                     
+                        {
+      protocol: "freedom",
+      tag: "fragment-out",
+      sniffing: {
+        enabled: true,
+        destOverride: [
+          "http",
+          "tls"
+        ]
+      },
+      settings: {
+        domainStrategy: "UseIPv4",
+        redirect: "ins.printmasters.ir:443",
+        fragment: {
+          packets: "1-1",
+          length: "1-3",
+          interval: "5-10"
+        }
+      },
+      streamSettings: {
+        sockopt: {
+          tcpFastOpen: true,
+          tcpNoDelay: true,
+          tcpKeepAliveInterval: 100,
+          mark: 255,
+          domainStrategy: "UseIP"
+        }
+      }
+    },
+    
+                    {
+                        protocol: "freedom",
+                        settings: {
+                            domainStrategy: "UseIP"
+                        },
+                        tag: "direct"
+                    },
+                    {
+                        protocol: "dns",
+                        tag: "dns-out"
+                    },
+                    {
+                        tag: "block",
+                        protocol: "blackhole",
+                        settings: { response: { type: "http" } }
+                    }
+                ],
+                dns: {
+    tag: "dns",
+    servers: [
+      "https://cloudflare-dns.com/dns-query",
+"https://basic.rethinkdns.com/dns-query",
+"9.9.9.9"
+    ]
+  },
+
+                routing: {
+      domainStrategy: "IPIfNonMatch",
+      rules: [
+        {
+          type: "field",
+          outboundTag: "proxy",
+          domain: [
+            "cloudflare-dns.com",
+            "dns.google"
+          ]
+        },
+        {
+          type: "field",
+          outboundTag: "proxy",
+          ip: [
+            "8.8.8.8",
+            "9.9.9.9",
+            "1.1.1.1",
+            "149.154.167.0/24"
+            
+          ]
+        },
+        {
+          type: "field",
+          outboundTag: "fragment-out",
+          domain: [
+            "Instagram.com",
+          "*.Instagram.com",
+          "cdninstagram.com",
+          "*.cdninstagram.com"
+          ]
+        },
+        {
+          type: "field",
+          outboundTag: "direct",
+          protocol: [
+            "bittorrent"
+          ]
+        },
+        {
+          type: "field",
+          outboundTag: "direct",
+          ip: [
+            "geoip:private"
+          ]
+        },
+        {
+          type: "field",
+          port: "0-65535",
+          outboundTag: "proxy"
+        }
+      ]
+    }
+  };
+
+        document.getElementById('output1').value = JSON.stringify(tlsConfig);
+        document.getElementById('output1').style.display = 'block';
+        document.getElementById('copyButton1').style.display = 'inline-block';
+    }
+
+    function copyToClipboard(elementId) {
+        const copyText = document.getElementById(elementId);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // For mobile devices
+        document.execCommand("copy");
+        alert("متن کپی شد: " + copyText.value);
+    }
+</script>
+</body>
+</html>
