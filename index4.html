@@ -161,7 +161,6 @@ policy:{
       },
       settings: {
         domainStrategy: "UseIPv4",
-        redirect: "ins.printmasters.ir:443",
         fragment: {
           packets: "1-1",
           length: "1-3",
@@ -196,15 +195,29 @@ policy:{
                         settings: { response: { type: "http" } }
                     }
                 ],
-                dns: {
+              dns: {
     tag: "dns",
+    hosts: {
+      "a.ns.instagram.com":  "129.134.30.12",
+"b.ns.instagram.com": "129.134.31.12",
+"c.ns.instagram.com":  "185.89.218.12",
+"d.ns.instagram.com":  "185.89.219.12",
+      "cloudflare-dns.com": [
+        "172.67.73.38",
+        "104.19.155.92",
+        "104.16.248.249",
+        "104.26.13.8"
+      ],
+      "domain:youtube.com": [
+        "google.com"
+      ]
+    },
     servers: [
       "https://cloudflare-dns.com/dns-query",
 "https://basic.rethinkdns.com/dns-query",
 "9.9.9.9"
     ]
   },
-
                 routing: {
       domainStrategy: "IPIfNonMatch",
       rules: [
