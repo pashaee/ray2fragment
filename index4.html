@@ -96,13 +96,55 @@ policy:{
           routeOnly: true
         },
         settings: {
+          userLevel: 8,
           auth: "noauth",
           udp: true,
           allowTransparent: true
         }
+      },
+      {
+      protocol: "http",
+      tag: "http",
+      listen: "127.0.0.1",
+      port: 10809,
+      settings: {
+        userLevel: 8
+      },
+      sniffing: {
+        enabled: true,
+        destOverride: ["http", "tls"]
       }
+    }
     ],
                 outbounds: [
+                {
+      protocol: "freedom",
+      tag: "fragment-out",
+      sniffing: {
+        enabled: true,
+        destOverride: [
+          "http",
+          "tls"
+        ]
+      },
+      settings: {
+        domainStrategy: "UseIPv4",
+        fragment: {
+          packets: "1-1",
+          length: "1-3",
+          interval: "5-10"
+        }
+      },
+      streamSettings: {
+        sockopt: {
+          tcpFastOpen: true,
+          tcpNoDelay: true,
+          tcpKeepAliveInterval: 100,
+          mark: 255,
+          domainStrategy: "UseIP"
+        }
+      }
+    },
                     {
                         tag: "proxy",
                         protocol: "vless",
@@ -147,34 +189,7 @@ policy:{
         }
                             }
                         },                     
-                        {
-      protocol: "freedom",
-      tag: "fragment-out",
-      sniffing: {
-        enabled: true,
-        destOverride: [
-          "http",
-          "tls"
-        ]
-      },
-      settings: {
-        domainStrategy: "UseIPv4",
-        fragment: {
-          packets: "1-1",
-          length: "1-3",
-          interval: "5-10"
-        }
-      },
-      streamSettings: {
-        sockopt: {
-          tcpFastOpen: true,
-          tcpNoDelay: true,
-          tcpKeepAliveInterval: 100,
-          mark: 255,
-          domainStrategy: "UseIP"
-        }
-      }
-    },
+
     
                     {
                         protocol: "freedom",
@@ -220,6 +235,14 @@ policy:{
           ]
         },
         {
+        inboundTag: ["socks", "http"],
+        type: "field",
+        port: "53",
+        outboundTag: "dns-out",
+        enabled: true
+      },
+
+        {
           type: "field",
           outboundTag: "fragment-out",
           domain: [
@@ -228,7 +251,8 @@ policy:{
           "cdninstagram.com",
           "*.cdninstagram.com",
           "youtube.com"
-          ]
+          ],
+          "enabled": true
         },
         {
         type: "field",
@@ -237,7 +261,8 @@ policy:{
           "157.240.0.0/16",
           "31.13.0.0/16",
           "204.15.20.0/22"
-        ]
+        ],
+        "enabled": true
       },
         {
           type: "field",
@@ -256,10 +281,14 @@ policy:{
         {
           type: "field",
           port: "0-65535",
-          outboundTag: "proxy"
+          outboundTag: "proxy",
+          enabled: true
         }
-      ]
-    }
+      ],
+       strategy: "rules"
+    },
+    "stats": {}
+  
   };
 
         document.getElementById('output1').value = JSON.stringify(tlsConfig);
