@@ -210,16 +210,9 @@ policy:{
                 ],
                 dns: {
     tag: "dns",
-    hosts: {
-      "a.ns.instagram.com":  "129.134.30.12",
-"b.ns.instagram.com": "129.134.31.12",
-"c.ns.instagram.com":  "185.89.218.12",
-"d.ns.instagram.com":  "185.89.219.12"
-    },
     servers: [
-      "https://cloudflare-dns.com/dns-query",
-"https://basic.rethinkdns.com/dns-query",
-"9.9.9.9"
+      "https://api.ps4link.su/dns-query",
+      "9.9.9.9"
     ]
   },
 
@@ -230,8 +223,7 @@ policy:{
           type: "field",
           outboundTag: "proxy",
           domain: [
-            "cloudflare-dns.com",
-            "rethinkdns.com"
+            "cloudflare-dns.com"
           ]
         },
         {
@@ -250,9 +242,6 @@ policy:{
           "*.instagram.com",
           "cdninstagram.com",
           "*.cdninstagram.com",
-              "*.fbcdn.net",
-              "*.igcdn.com",
-              "*.igsonar.com",
           "youtube.com"
           ],
           "enabled": true
