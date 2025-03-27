@@ -1,5 +1,6 @@
 
 {
+	"remarks": "safeNet4All",
   "log": {
     "loglevel": "warning", "dnsLog": false, "access": "none"
   },
