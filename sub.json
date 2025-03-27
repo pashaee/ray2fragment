@@ -18,7 +18,7 @@
         "104.26.13.8"
       ],
 	     "servers": ["https://cloudflare-dns.com/dns-query"]
-    }
+    },
     "tag": "dns-query",
     "disableFallback": true
   },
