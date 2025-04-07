@@ -1,0 +1,476 @@
+{
+  "remarks": "VPN%20%D8%B1%D8%A7%DB%8C%DA%AF%D8%A7%D9%86%20%D8%B1%D9%88%D8%B2%D8%A7%D9%86%D9%87%20%40safeNet4All",
+  "log": {
+    "loglevel": "warning",
+    "dnsLog": false
+  },
+  "dns": {
+    "servers": [
+      "https://1.1.1.1/dns-query",
+      "https://api.ps4link.su/dns-query"
+    ],
+    "tag": "dns-query",
+    "disableFallback": false
+  },
+  "inbounds": [
+    {
+      "tag": "dns-in",
+      "port": 10853,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "address": "1.1.1.1",
+        "port": 53,
+        "network": "tcp,udp"
+      }
+    },
+    {
+      "tag": "socks-in",
+      "port": 10808,
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ],
+        "routeOnly": false
+      },
+      "settings": {
+        "udp": true
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "block",
+      "protocol": "blackhole"
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "ForceIP"
+      }
+    },
+    {
+      "tag": "dns-out",
+      "protocol": "dns",
+      "settings": {
+        "nonIPQuery": "skip",
+        "network": "tcp",
+        "address": "1.1.1.1",
+        "port": 53
+      },
+      "streamSettings": {
+        "sockopt": {
+          "dialerProxy": "chain1-fragment"
+        }
+      }
+    },
+    {
+      "tag": "super-fragment",
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "tlshello",
+          "length": "6",
+          "interval": "0"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "dialerProxy": "chain1-fragment"
+        }
+      }
+    },
+    {
+      "tag": "chain1-fragment",
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-3",
+          "length": "517",
+          "interval": "1"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "dialerProxy": "chain2-fragment"
+        }
+      }
+    },
+    {
+      "tag": "chain2-fragment",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "ForceIP",
+        "fragment": {
+          "packets": "1-1",
+          "length": "1",
+          "interval": "2"
+        }
+      }
+    },
+    {
+      "tag": "udp-noisesv4",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "ForceIPv4",
+        "noises": [
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1250",
+            "delay": "10"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "udp-noisesv6",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "ForceIPv6",
+        "noises": [
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          },
+          {
+            "type": "rand",
+            "packet": "1230",
+            "delay": "10"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "www.speedtest.net",
+            "port": 443,
+            "users": [
+              {
+                "id": "8dfe04a4-621a-47c2-901b-33e4c6d7c5fe",
+                "alterId": 0,
+                "email": "t@t.tt",
+                "security": "auto",
+                "encryption": "none",
+                "flow": ""
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "tlsSettings": {
+          "allowInsecure": true,
+          "serverName": "PaSHAt.PaGEs.DeV",
+          "alpn": [
+            "h2"
+          ],
+          "fingerprint": "chrome",
+          "show": false
+        },
+        "wsSettings": {
+          "path": "/tVaykOKG4XBllXQp/MTkzLjEyMy44MS4xMDU=?ed=2560",
+          "headers": {
+            "Host": "pashat.pages.dev"
+          }
+        },
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpKeepAliveInterval": 100,
+          "tcpNoDelay": true
+        }
+      }
+    }
+  ],
+  "routing": {
+    "domainStrategy": "IPOnDemand",
+    "rules": [
+      {
+        "outboundTag": "dns-out",
+        "inboundTag": [
+          "dns-in"
+        ]
+      },
+      {
+        "outboundTag": "dns-out",
+        "inboundTag": [
+          "socks-in"
+        ],
+        "port": 53
+      },
+      {
+        "outboundTag": "proxy",
+        "inboundTag": [
+          "dns-query"
+        ]
+      },
+      {
+        "outboundTag": "block",
+        "ip": [
+          "10.10.34.0/24",
+          "2001:4188:2:600:10:10:34:36",
+          "2001:4188:2:600:10:10:34:35"
+        ]
+      },
+      {
+        "outboundTag": "udp-noisesv4",
+        "network": "udp",
+        "ip": [
+          "0.0.0.0/0"
+        ],
+        "port": 443
+      },
+      {
+        "outboundTag": "udp-noisesv6",
+        "network": "udp",
+        "ip": [
+          "::/0"
+        ],
+        "port": 443
+      },
+      {
+        "type": "field",
+        "domain": [
+          "instagram.com",
+          "www.instagram.com",
+          "regexp:^scontent.*\\.cdninstagram\\.com$",
+          "regexp:^.*\\.instagram\\.com$",
+          "youtube.com",
+          "regexp:^.*\\.youtube\\.com$"
+        ],
+        "outboundTag": "chain1-fragment"
+      },
+      {
+        "type": "field",
+        "port": "0-65535",
+        "outboundTag": "proxy",
+        "enabled": true
+      }
+    ]
+  }
+}
