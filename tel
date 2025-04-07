@@ -6,8 +6,8 @@
   },
   "dns": {
     "servers": [
-      "https://1.1.1.1/dns-query",
-      "https://api.ps4link.su/dns-query"
+      "https://8.8.8.8/dns-query",
+      "https://45.11.45.11/dns-query"
     ],
     "tag": "dns-query",
     "disableFallback": false
@@ -18,7 +18,7 @@
       "port": 10853,
       "protocol": "dokodemo-door",
       "settings": {
-        "address": "1.1.1.1",
+        "address": "45.11.45.11",
         "port": 53,
         "network": "tcp,udp"
       }
@@ -59,7 +59,7 @@
       "settings": {
         "nonIPQuery": "skip",
         "network": "tcp",
-        "address": "1.1.1.1",
+        "address": "45.11.45.11",
         "port": 53
       },
       "streamSettings": {
